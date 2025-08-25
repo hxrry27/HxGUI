@@ -1,0 +1,17 @@
+name: HxGUI
+version: 1.0.0-SNAPSHOT
+main: dev.hxrry.hxgui.HxGUI
+api-version: "1.21"
+author: hxrry
+description: Advanced GUI library for Paper/Spigot plugins
+website: https://repo.hxrry.dev
+
+# soft dependencies - load after these if present
+softdepend:
+  - HxCore
+
+# commands - none for a library
+commands: {}
+
+# permissions - none for a library  
+permissions: {}
