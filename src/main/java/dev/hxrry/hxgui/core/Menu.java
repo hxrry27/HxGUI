@@ -92,6 +92,11 @@ public abstract class Menu implements InventoryHolder {
     
     // open for player
     public void open(Player player) {
+        // Check if HxGUI is initialized
+        if (!HxGUI.isInitialized()) {
+            throw new IllegalStateException("HxGUI library not initialized! Call HxGUI.init(plugin) in your onEnable()");
+        }
+        
         Inventory inv = getInventory(player);
         
         // populate inventory with items
@@ -105,6 +110,7 @@ public abstract class Menu implements InventoryHolder {
         // open the inventory
         player.openInventory(inv);
     }
+    
     
     // close for player
     public void close(Player player) {
@@ -158,10 +164,13 @@ public abstract class Menu implements InventoryHolder {
         }
     }
     
-    // cleanup when closed
     public void onClose(Player player) {
         inventories.remove(player.getUniqueId());
-        HxGUI.getInstance().getMenuManager().unregisterMenu(player);
+        
+        // Only unregister if initialized
+        if (HxGUI.isInitialized()) {
+            HxGUI.getInstance().getMenuManager().unregisterMenu(player);
+        }
     }
     
     // getters

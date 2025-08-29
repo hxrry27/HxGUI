@@ -1,6 +1,5 @@
 package dev.hxrry.hxgui.core;
 
-import dev.hxrry.hxgui.HxGUI;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -10,6 +9,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.PluginDisableEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,12 +17,12 @@ import java.util.UUID;
 
 public class MenuManager implements Listener {
     
-    private final HxGUI plugin;
+    private final JavaPlugin plugin;
     private final Map<UUID, Menu> openMenus = new HashMap<>();
     
-    public MenuManager(HxGUI plugin) {
+    public MenuManager(JavaPlugin plugin) {
         this.plugin = plugin;
-        // register events
+        // register events with the host plugin
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
     
@@ -136,9 +136,8 @@ public class MenuManager implements Listener {
     // handle plugin disable
     @EventHandler
     public void onPluginDisable(PluginDisableEvent event) {
-        // close all menus if any plugin disables
-        // this prevents issues with inter-plugin dependencies
-        if (!openMenus.isEmpty()) {
+        // close all menus if the host plugin disables
+        if (event.getPlugin().equals(plugin)) {
             closeAll();
         }
     }

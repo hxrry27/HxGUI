@@ -3,49 +3,73 @@ package dev.hxrry.hxgui;
 import org.bukkit.plugin.java.JavaPlugin;
 import dev.hxrry.hxgui.core.MenuManager;
 
-public class HxGUI extends JavaPlugin {
+public class HxGUI {
     
     private static HxGUI instance;
+    private final JavaPlugin hostPlugin;
     private MenuManager menuManager;
     
-    @Override
-    public void onEnable() {
-        instance = this;
+    // Private constructor - use init() to create
+    private HxGUI(JavaPlugin plugin) {
+        this.hostPlugin = plugin;
+        this.menuManager = new MenuManager(plugin);
         
-        // initialize the menu manager and register events
-        menuManager = new MenuManager(this);
-        
-        // register metrics if needed
-        // todo: add bstats later if we want
-        
-        getLogger().info("HxGUI enabled - gui library ready for use");
+        plugin.getLogger().info("HxGUI library initialized");
     }
     
-    @Override
-    public void onDisable() {
-        // close all open menus to prevent weirdness
-        if (menuManager != null) {
-            menuManager.closeAll();
+    /**
+     * Initialize the HxGUI library with your plugin
+     * Call this in your plugin's onEnable()
+     * 
+     * @param plugin Your plugin instance
+     * @return The HxGUI instance
+     */
+    public static HxGUI init(JavaPlugin plugin) {
+        if (instance != null) {
+            plugin.getLogger().warning("HxGUI already initialized!");
+            return instance;
         }
         
-        getLogger().info("HxGUI disabled");
-        instance = null;
+        instance = new HxGUI(plugin);
+        return instance;
     }
     
-    // static access for other plugins
+    /**
+     * Shutdown the library
+     * Call this in your plugin's onDisable()
+     */
+    public static void shutdown() {
+        if (instance != null && instance.menuManager != null) {
+            instance.menuManager.closeAll();
+            instance = null;
+        }
+    }
+    
+    /**
+     * Get the instance (will be null if not initialized)
+     */
     public static HxGUI getInstance() {
         return instance;
     }
     
-    // get the menu manager for internal use
+    /**
+     * Get the menu manager
+     */
     public MenuManager getMenuManager() {
         return menuManager;
     }
     
-    // convenience method for other plugins
-    public static void init(JavaPlugin plugin) {
-        if (instance == null) {
-            plugin.getLogger().warning("HxGUI is not loaded! make sure it's in your plugins folder");
-        }
+    /**
+     * Get the host plugin
+     */
+    public JavaPlugin getPlugin() {
+        return hostPlugin;
+    }
+    
+    /**
+     * Check if the library is initialized
+     */
+    public static boolean isInitialized() {
+        return instance != null;
     }
 }
