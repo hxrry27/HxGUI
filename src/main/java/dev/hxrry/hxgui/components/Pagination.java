@@ -184,13 +184,15 @@ public class Pagination {
             menu.setItemFor(player, infoSlot, new MenuItem(infoItem));
         }
     }
-    
-    // open for player
+
     public void open(Player player) {
         // initialize page if needed
         if (!playerPages.containsKey(player.getUniqueId())) {
             playerPages.put(player.getUniqueId(), 0);
         }
+        
+        // ensure inventory exists BEFORE updating items
+        menu.getInventory(player);  
         
         // update and open
         updatePage(player);
