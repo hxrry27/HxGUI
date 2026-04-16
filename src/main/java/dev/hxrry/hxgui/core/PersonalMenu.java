@@ -57,11 +57,11 @@ public class PersonalMenu extends Menu {
         }
     }
     
-    // set item for specific player only
     public void setItemFor(Player player, int slot, MenuItem item) {
         Inventory inv = inventories.get(player.getUniqueId());
         if (inv != null) {
             inv.setItem(slot, item.getItem());
+            setItem(slot, item);  
         }
     }
     
